@@ -112,5 +112,5 @@ Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng
 5. Ghi lý do không deploy được vào khối dưới đây:
 
 ```
-FALLBACK_REASON_IF_ANY
+Không áp dụng — bài đã deploy thật lên Railway (xem Public URL ở trên).
 ```
