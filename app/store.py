@@ -13,6 +13,7 @@ import json
 import redis
 
 from .config import get_settings
+from .logging_utils import log_event
 
 HISTORY_MAX_MESSAGES = 20
 HISTORY_TTL_SECONDS = 7 * 24 * 3600
@@ -53,7 +54,13 @@ class ConversationStore:
         """
         try:
             return bool(self.client.ping())
-        except Exception:
+        except Exception as exc:
+            log_event(
+                "redis_ping_failed",
+                level="error",
+                error_type=type(exc).__name__,
+                error=str(exc),
+            )
             return False
 
     def append(self, user_id: str, role: str, content: str) -> None:

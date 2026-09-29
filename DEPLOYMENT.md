@@ -10,17 +10,17 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Họ và tên | (điền họ tên) |
-| Mã học viên | (điền mã học viên) |
-| Repo | (điền link repo K4-L3B-DAY12-HoVaTen-MSSV-CloudServicesAndDeployment) |
+| Họ và tên | Phùng Quang Minh Huy |
+| Mã học viên | 2A202602610 |
+| Repo | https://github.com/huy20/K4-L3B-DAY12-Phung-Quang-Minh-Huy-2A202602610-CloudServicesAndDeployment |
 
 ## Service
 
 | Mục | Nội dung |
 |-----|----------|
-| Public URL | https://TODO-thay-bang-url-that.up.railway.app |
-| Platform | Railway / Render / Cloud Run — (điền platform bạn dùng) |
-| Ngày deploy | (điền ngày) |
+| Public URL | https://agent-production-1a5a.up.railway.app |
+| Platform | Railway |
+| Ngày deploy | 2026-09-29 |
 
 ## Biến Môi Trường Đã Set Trên Cloud
 
@@ -28,9 +28,9 @@ Ghi tên biến và **nguồn giá trị**, không ghi giá trị:
 
 | Biến | Đã set | Ghi chú |
 |------|--------|---------|
-| `PORT` | ✅ | platform tự gán |
-| `AGENT_API_KEY` | ✅ | đặt trong dashboard, không nằm trong repo |
-| `REDIS_URL` | ✅ | (điền: Redis add-on của platform / Upstash / ...) |
+| `PORT` | ✅ | platform tự gán, app đọc `$PORT` |
+| `AGENT_API_KEY` | ✅ | đặt trong dashboard Railway, không nằm trong repo |
+| `REDIS_URL` | ✅ | reference tới Redis service: `${{Redis.REDIS_URL}}` |
 | `RATE_LIMIT_PER_MINUTE` | ✅ | 10 |
 | `MONTHLY_BUDGET_USD` | ✅ | 10.0 |
 | `LOG_LEVEL` | ✅ | INFO |
@@ -70,10 +70,25 @@ done; echo
 
 ## Kết Quả Chạy Thật
 
-Dán output của các lệnh trên vào đây:
+Dán output của các lệnh trên vào đây (thay dòng placeholder bên dưới):
 
 ```
-(điền output)
+$ curl -i https://agent-production-1a5a.up.railway.app/health
+HTTP/1.1 200 OK
+{"status":"ok","service":"day12-agent","version":"1.0.0"}
+
+$ curl -i https://agent-production-1a5a.up.railway.app/ready
+HTTP/1.1 200 OK
+{"status":"ready","redis":true}
+
+$ curl -i -X POST https://agent-production-1a5a.up.railway.app/ask -H "Content-Type: application/json" -d '{"question":"Hello"}'
+HTTP/1.1 401 Unauthorized
+
+$ curl -i -X POST https://agent-production-1a5a.up.railway.app/ask \
+    -H "Content-Type: application/json" -H "X-API-Key: $AGENT_API_KEY" -H "X-User-Id: sv-test" \
+    -d '{"question":"Deploy là gì?"}'
+HTTP/1.1 200 OK
+{"answer":"Ngắn gọn: Deploy la gi phụ thuộc vào ba yếu tố — cấu hình qua biến môi trường, health check để orchestrator biết trạng thái, và giới hạn tài nguyên.","user_id":"sv-test","history_length":0,"cost_usd":2.265e-05,"tokens":{"in":3,"out":37}}
 ```
 
 ## Ảnh Chụp Màn Hình
@@ -89,13 +104,13 @@ Dán output của các lệnh trên vào đây:
 
 Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng CP5 tối đa 60% điểm:
 
-1. Đặt `LOCAL_FALLBACK=true` trong `.env`
+1. Đặt `LOCAL_FALLBACK=true` trong `.env` (file này không được commit)
 2. Chạy `docker compose up -d` rồi kiểm tra `docker compose ps`
 3. Chụp màn hình vào `screenshots/`
 4. Chạy `pytest tests/test_cp5.py -v` — bộ test sẽ tự chuyển sang kiểm tra
    `http://localhost:8000`
-5. Ghi rõ lý do không deploy được vào phần dưới đây:
+5. Ghi lý do không deploy được vào khối dưới đây:
 
 ```
-(điền lý do nếu dùng phương án dự phòng, ngược lại xóa mục này)
+FALLBACK_REASON_IF_ANY
 ```
